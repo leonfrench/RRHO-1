@@ -1,0 +1,15 @@
+Package: RRHO
+Type: Package
+Title: Inference on agreement between ordered lists
+Version: 1.8.0
+Date: 2014-06-26
+Author: Jonathan Rosenblatt and Jason Stein 
+Maintainer: Jonathan Rosenblatt <john.ros.work@gmail.com>
+Description: The package is aimed at inference on the amount of agreement in two sorted lists using the Rank-Rank Hypergeometric Overlap test.
+License: GPL-2
+Depends: R (>= 2.10), grid
+Imports: VennDiagram
+Suggests: lattice
+Enhances: 
+biocViews: Genetics, SequenceMatching, Microarray, Transcription
+Packaged: 2014-06-30 09:18:58 UTC; johnros
