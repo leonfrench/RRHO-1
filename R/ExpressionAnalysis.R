@@ -23,7 +23,7 @@ numericListOverlap<- function(sample1, sample2, stepsize, alternative){
     count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b]))) #computes overlap
     switch(alternative,
            enrichment={
-             log.pval<- phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE) + dhyper(x=count, m=a, n=n-a, k=b) #dhyper needed for [X >= x]         
+             pval<- phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE) + dhyper(x=count, m=a, n=n-a, k=b) #dhyper needed for [X >= x]         
              signs<- 1L
            },
            two.sided={
