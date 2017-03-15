@@ -125,7 +125,9 @@ RRHO <- function(list1, list2,
   
   ## Number of genes on the array
   N  <- max(nlist1,nlist2)
-  
+  list1[,1] <- as.character(list1[,1]) #ensure overlaps are done by strings not factors
+  list1[,2] <- as.character(list1[,2])
+
   .hypermat<- numericListOverlap(list1[,1], list2[,1], stepsize, alternative)
   hypermat<- .hypermat$log.pval
     
