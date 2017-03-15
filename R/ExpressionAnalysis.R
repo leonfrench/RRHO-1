@@ -16,40 +16,36 @@ defaultStepSize <-function(list1, list2){
 
 
 ## Compute the overlaps between two *numeric* lists:
-numericListOverlap<- function(sample1, sample2, stepsize, alternative, tol=0.5){
+numericListOverlap<- function(sample1, sample2, stepsize, alternative){
   n<- length(sample1)
   
   overlap<- function(a,b) {
-    count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b])))
-    
-  switch(alternative,
+    count<-as.integer(sum(as.numeric(sample1[1:a] %in% sample2[1:b]))) #computes overlap
+    switch(alternative,
            enrichment={
-             log.pval<- -phyper(q=count-1, m=a, n=n-a+1, k=b, lower.tail=FALSE, log.p=TRUE)         
+             log.pval<- phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE) + dhyper(x=count, m=a, n=n-a, k=b) #dhyper needed for [X >= x]         
              signs<- 1L
            },
            two.sided={
              the.mean<- a*b/n
              signs<- sign(count - the.mean)
-             if(signs < 0){
-               lower<- count 
-               upper<- 2*the.mean - count 
-             } else{
-               lower<- 2*the.mean - count 
-               upper<- count 
+             if(signs < 0){ 
+               pval<- 2*phyper(q=count, m=a, n=n-a, k=b, lower.tail=TRUE) #for [X <= x]         
+             } else{ #double the enrichment p-value above in the enrichment case
+               pval<- 2*(phyper(q=count, m=a, n=n-a, k=b, lower.tail=FALSE) + dhyper(x=count, m=a, n=n-a, k=b)) #dhyper needed for [X >= x], could be reduced to a single call with q=count-1         
              }
-             
-             log.pval<- -log(
-               phyper(q=lower+tol, m=a, n=n-a+1, k=b, lower.tail=TRUE) +
-                 phyper(q= upper-tol, m=a, n=n-a+1, k=b, lower.tail=FALSE))                               
+             if(pval > 1) pval <- 1 
            })
-    
+    log.pval <- -log(pval)
+
     return(c(counts=count, 
              log.pval=as.numeric(log.pval),
              signs=as.integer(signs)))    
   }
   
   
-  indexes<- expand.grid(i=seq(1,n,by=stepsize), j=seq(1,n,by=stepsize))
+  indexes<- expand.grid(i=seq(stepsize,n-stepsize,by=stepsize), j=seq(stepsize,n-stepsize,by=stepsize))
+  
   overlaps<- apply(indexes, 1, function(x) overlap(x['i'], x['j']))
   
   nrows<- sqrt(ncol(overlaps))
@@ -61,6 +57,8 @@ numericListOverlap<- function(sample1, sample2, stepsize, alternative, tol=0.5){
               log.pval=matrix.log.pvals,
               signs= matrix.signs))  
 }
+
+
 ### Testing:
 # n<- 112
 # sample1<- sample(n)
