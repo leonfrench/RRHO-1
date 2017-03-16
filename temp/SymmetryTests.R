@@ -3,9 +3,10 @@ library(lattice)
 
 #set this to change RRHO version
 #packageToUse <- "RRHO2"
-#packageToUse <- "Bioconductor"
-packageToUse <- "LeonVersion"
+packageToUse <- "Bioconductor"
+#packageToUse <- "LeonVersion"
 
+#the below might need to be done line by line
 if(packageToUse=="Bioconductor" ) {
   detach("package:RRHO", unload=TRUE)
   #Bio conductor RRHO:
